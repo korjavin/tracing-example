@@ -2,14 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"contrib.go.opencensus.io/exporter/jaeger"
-	uuid "github.com/satori/go.uuid"
 	"go.opencensus.io/trace"
 
 	// for pg driver
@@ -20,7 +18,7 @@ import (
 const (
 	envTracingHost = "http://localhost:14268/api/traces"
 	envPgConn      = "postgres://user:pass@localhost:9241/mydb?sslmode=disable"
-	waitTime       = time.Second * 30
+	waitTime       = time.Second * 5
 )
 
 func main() {
@@ -43,8 +41,9 @@ func main() {
 		trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 	} // Create exporter.
 
-	id := uuid.NewV4()
-	clientCtx, span := trace.StartSpan(context.Background(), fmt.Sprintf("Request: %s", id))
+	// id := uuid.NewV4()
+	// clientCtx, span := trace.StartSpan(context.Background(), fmt.Sprintf("Request: %s", id))
+	clientCtx, span := trace.StartSpan(context.Background(), "Hi")
 	defer span.End()
 	span.Annotate(nil, "Hi, I'm from client")
 	span.AddAttributes(trace.Int64Attribute("to_server", 1))
